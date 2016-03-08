@@ -28,9 +28,9 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x += dt * this.speed;
-    console.log(" pre testing bounds");
+    // console.log(" pre testing bounds");
     if (this.isOutOfBounds()) {
-        console.log(this.x + " is out of bounds");
+        // console.log(this.x + " is out of bounds");
 
         this.speed = 150 * Math.random() + 50;
         if (Math.random() < 0.5) {
@@ -61,9 +61,9 @@ Enemy.prototype.render = function() {
 
 // outOfBounds Convenience
 Enemy.prototype.isOutOfBounds = function() {
-    console.log("testing bounds");
-    console.log(canvas.width);
-    console.log(this.x);
+    // console.log("testing bounds");
+    // console.log(canvas.width);
+    // console.log(this.x);
     if (this.x > canvas.width + 100 || this.x < - 100) {
         return true;
     } else {
@@ -74,11 +74,64 @@ Enemy.prototype.isOutOfBounds = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function() {}
-Player.prototype.update = function(){};
-Player.prototype.render = function(){};
-Player.prototype.handleInput = function(){};
+var Player = function() {
+    // The image/sprite for our enemies, this uses
+    // a helper we've provided to easily load images
+    this.sprite = 'images/char-boy.png';
+    this.x = 200;//0,100,200,300,400
+    this.y = 370;//50,130,210,290,370
 
+}
+Player.prototype.update = function(){};
+Player.prototype.render = function(){
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+Player.prototype.handleInput = function(input){
+    var verticalStep = 80;
+    var horizontalStep = 100;
+    switch (input) {
+        case "up":
+            if ( this.y - verticalStep > 0) {
+                console.log ((this.y - verticalStep) + " > " + 0);
+                this.y -= verticalStep;
+            }
+            break;
+        case "down":
+            if ( this.y + verticalStep < canvas.height -160) {
+                console.log ((this.y + verticalStep) + " < " + (canvas.height- 160));
+                this.y += verticalStep;
+            }
+            break;
+        case "left":
+            if ( this.x - horizontalStep >= 0) {
+                this.x -= horizontalStep;
+                console.log(this.x);
+            }
+            break;
+        case "right":
+            if ( this.x + horizontalStep <= canvas.width-105) {
+                this.x += horizontalStep;
+                console.log(this.x  + " <= " + (canvas.width-105));
+            }
+            break;
+    }
+    // if (input === "up") {
+    //     this.y -= 80;
+    // }
+    console.log(input);
+};
+
+// outOfBounds Convenience
+Player.prototype.isOutOfBounds = function() {
+    // console.log("testing bounds");
+    // console.log(canvas.width);
+    // console.log(this.x);
+    if (this.x > canvas.width + 100 || this.x < - 100) {
+        return true;
+    } else {
+        return false;
+    }
+};
 
 
 
