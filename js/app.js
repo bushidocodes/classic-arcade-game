@@ -21,11 +21,29 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x += dt * this.speed;
+    console.log(" pre testing bounds");
+    if (this.isOutOfBounds()) {
+        console.log(this.x + " is out of bounds");
+        this.speed = 150 * Math.random() + 50;
+        this.x = -100;
+    }
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+// outOfBounds Convenience
+Enemy.prototype.isOutOfBounds = function() {
+    console.log("testing bounds");
+    console.log(canvas.width);
+    console.log(this.x);
+    if (this.x > canvas.width + 100) {
+        return true;
+    } else {
+        return false;
+    }
 };
 
 // Now write your own player class
@@ -35,6 +53,9 @@ var Player = function() {}
 Player.prototype.update = function(){};
 Player.prototype.render = function(){};
 Player.prototype.handleInput = function(){};
+
+
+
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies

@@ -180,4 +180,6 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
+    // Make canvas global to be able to use width and height for in-bounds checking.
+    global.canvas = canvas;
 })(this);
