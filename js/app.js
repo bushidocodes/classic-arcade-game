@@ -10,7 +10,14 @@ var Enemy = function(y) {
     // MVP is set speed. TODO: Randomly generate enemy speed
     this.speed = 150 * Math.random() + 50;
 
-    this.x = -100;
+
+    if (Math.random() < 0.5) {
+        this.x = -100;
+    } else {
+        this.x = 505 + 100; //use canvas width
+        this.speed = -this.speed;
+    }
+
     this.y = y;//60,145,230
 };
 
@@ -24,14 +31,32 @@ Enemy.prototype.update = function(dt) {
     console.log(" pre testing bounds");
     if (this.isOutOfBounds()) {
         console.log(this.x + " is out of bounds");
+
         this.speed = 150 * Math.random() + 50;
-        this.x = -100;
+        if (Math.random() < 0.5) {
+            this.x = -100;
+        } else {
+            this.x = 505 + 100; //use canvas width
+            this.speed = -this.speed;
+        }
     }
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    if (this.speed > 0) {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    } else {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.scale(-1, 1);
+        //ctx.rotate(Math.PI);
+        ctx.drawImage(Resources.get(this.sprite), 0, 0);
+        //ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+        //ctx.rotate(Math.PI);
+        ctx.restore();
+    }
+
 };
 
 // outOfBounds Convenience
@@ -39,7 +64,7 @@ Enemy.prototype.isOutOfBounds = function() {
     console.log("testing bounds");
     console.log(canvas.width);
     console.log(this.x);
-    if (this.x > canvas.width + 100) {
+    if (this.x > canvas.width + 100 || this.x < - 100) {
         return true;
     } else {
         return false;
