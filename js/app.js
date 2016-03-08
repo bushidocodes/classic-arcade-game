@@ -1,5 +1,5 @@
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
@@ -8,10 +8,10 @@ var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
 
     // MVP is set speed. TODO: Randomly generate enemy speed
-    this.speed = 25;
+    this.speed = 150 * Math.random() + 50;
 
     this.x = -100;
-    this.y = 60;
+    this.y = y;//60,145,230
 };
 
 // Update the enemy's position, required method for game
@@ -39,7 +39,7 @@ Player.prototype.handleInput = function(){};
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [new Enemy];
+var allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)];
 var player = new Player;
 
 
