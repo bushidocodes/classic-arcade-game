@@ -13,7 +13,7 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-
+var gameOver = false;
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -27,12 +27,14 @@ var Engine = (function(global) {
 
     canvas.width = 505;
     canvas.height = 606;
-    doc.body.appendChild(canvas);
+    //doc.main.appendChild(canvas);
+    $("main").append(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
      */
     function main() {
+
         /* Get our time delta information which is required if your game
          * requires smooth animation. Because everyone's computer processes
          * instructions at different speeds we need a constant value that
@@ -45,18 +47,27 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        update(dt);
-        render();
+        if (!gameOver) {
+            update(dt);
+            render();
 
-        /* Set our lastTime variable which is used to determine the time delta
-         * for the next time this function is called.
-         */
-        lastTime = now;
+            /* Set our lastTime variable which is used to determine the time delta
+            * for the next time this function is called.
+            */
+            lastTime = now;
 
-        /* Use the browser's requestAnimationFrame function to call this
-         * function again as soon as the browser is able to draw another frame.
-         */
+            /* Use the browser's requestAnimationFrame function to call this
+            * function again as soon as the browser is able to draw another frame.
+            */
+
+        } else {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.font ="60px Arial";
+            ctx.fillText("GAME OVER", 80,200);
+        };
         win.requestAnimationFrame(main);
+
+
     }
 
     /* This function does some initial setup that should only occur once,
@@ -64,9 +75,13 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
+
         reset();
         lastTime = Date.now();
-        main();
+        // while (!gameOver) {
+            main();
+        // }
+
     }
 
     /* This function is called by main (our game loop) and itself calls all
@@ -159,6 +174,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
+        selectClass();
         // noop
     }
 
@@ -171,7 +187,12 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png'
+
     ]);
     Resources.onReady(init);
 

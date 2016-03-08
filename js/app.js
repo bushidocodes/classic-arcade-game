@@ -1,3 +1,11 @@
+var score = 0;
+var sprites = [
+    "images/char-boy.png",
+    "images/char-cat-girl.png",
+    "images/char-horn-girl.png",
+    "images/char-pink-girl.png",
+    "images/char-princess-girl.png"
+    ]
 // Enemies our player must avoid
 var Enemy = function(y) {
     // Variables applied to each of our instances go here,
@@ -8,7 +16,7 @@ var Enemy = function(y) {
     this.sprite = 'images/enemy-bug.png';
 
     // MVP is set speed. TODO: Randomly generate enemy speed
-    this.speed = 150 * Math.random() + 50;
+    this.speed = 100 + 200 * Math.random() + score/20;
 
 
     if (Math.random() < 0.5) {
@@ -18,7 +26,7 @@ var Enemy = function(y) {
         this.speed = -this.speed;
     }
 
-    this.y = y;//60,145,230
+    this.y = y; // 60,145,230
 };
 
 // Update the enemy's position, required method for game
@@ -32,7 +40,7 @@ Enemy.prototype.update = function(dt) {
     if (this.isOutOfBounds()) {
         // console.log(this.x + " is out of bounds");
 
-        this.speed = 150 * Math.random() + 50;
+        this.speed = 100 + 200 * Math.random() + score/20;
         if (Math.random() < 0.5) {
             this.x = -100;
         } else {
@@ -80,9 +88,8 @@ Enemy.prototype.isOutOfBounds = function() {
 var Player = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.score = 0;
     this.lives = 3;
-    this.sprite = 'images/char-boy.png';
+    this.sprite = 'images/char-cat-girl.png';
     this.x = 200;//0,100,200,300,400
     this.y = 370;//50,130,210,290,370
 
@@ -96,6 +103,10 @@ Player.prototype.update = function(){
             if ( this.y - verticalStep > 0) {
                 // console.log ((this.y - verticalStep) + " > " + 0);
                 this.y -= verticalStep;
+            } else {
+                score += 100;
+                this.x = 200;//0,100,200,300,400
+                this.y = 370;//50,130,210,290,370
             }
             break;
         case "down":
@@ -125,8 +136,8 @@ Player.prototype.update = function(){
 };
 Player.prototype.render = function(){
     ctx.font = "30px Arial";
-    ctx.clearRect(0,0,150,30);
-    ctx.fillText("Score: " + player.score, 10, 30);
+    ctx.clearRect(0,0,200,30);
+    ctx.fillText("Score: " + score, 10, 30);
     ctx.clearRect(380,0,200,30);
     ctx.fillText("Lives: " + player.lives, 380,30);
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -134,11 +145,15 @@ Player.prototype.render = function(){
     if (this.isDead()) {
         console.log("You died");
         player.lives--;
+        if (player.lives <= 0) {
+            gameOver = true;
+            console.log("game over");
+        }
 
         this.x = 200;//0,100,200,300,400
         this.y = 370;//50,130,210,290,370
     } else {
-        console.log("not dead");
+        //console.log("not dead");
     }
 };
 
@@ -156,11 +171,10 @@ Player.prototype.isOutOfBounds = function() {
 };
 
 Player.prototype.isDead = function() {
-    console.log("ping");
     var playerSquareX = Math.round(player.x/100);
     var playerSquareY = Math.round(player.y/80);
     var collision = false;
-    console.log("Player in tile " + playerSquareX + ", " + playerSquareY);
+    //console.log("Player in tile " + playerSquareX + ", " + playerSquareY);
     allEnemies.forEach( function(enemy) {
         let enemySquareX = 0;
         if (enemy.speed < 0) {
@@ -170,13 +184,51 @@ Player.prototype.isDead = function() {
         }
         var enemySquareY = Math.round(enemy.y/80);
         // console.log(enemy.x);
-        console.log("Enemy in tile " + enemySquareX + ", " + enemySquareY);
+        //console.log("Enemy in tile " + enemySquareX + ", " + enemySquareY);
         if (playerSquareX === enemySquareX && playerSquareY === enemySquareY) {
-            console.log("collision");
+            //console.log("collision");
             collision = true;
         };
     });
     return collision;
+}
+
+function selectClass() {
+    $(".charClass").append()
+    for (var i = 0; i < sprites.length; i++) {
+        $("#charClass").append("<img id='sprite-"+i+"-clicked' src=" + sprites[i] +"></img>");
+        $( "#sprite-0-clicked" ).click(function() {
+            player.sprite = sprites[0];
+        });
+        $( "#sprite-1-clicked" ).click(function() {
+            player.sprite = sprites[1];
+        });
+        $( "#sprite-2-clicked" ).click(function() {
+            player.sprite = sprites[2];
+        });
+        $( "#sprite-3-clicked" ).click(function() {
+            player.sprite = sprites[3];
+        });
+        $( "#sprite-4-clicked" ).click(function() {
+            player.sprite = sprites[4];
+        });
+
+
+
+
+        // console.log(sprites[1]);
+        // ctx.font ="30px Arial";
+        // ctx.fillText("Select Class", canvas.width/2,50);
+        // ctx.drawImage(Resources.get(sprites[i]), canvas.width/5*i, 100);
+        // //classOffset += 100;
+    }
+    // ctx.clearRect(0,0,canvas.width,canvas.height);
+    // sprites.forEach( function(sprite){
+    //     ctx.drawImage(Resources.get(sprite), classOffset, 10);
+
+    // });
+
+
 }
 
 
