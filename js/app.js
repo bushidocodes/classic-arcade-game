@@ -56,7 +56,7 @@ Enemy.prototype.render = function() {
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.scale(-1, 1);
-        ctx.drawImage(Resources.get(this.sprite), 0, 0);
+        ctx.drawImage(Resources.get(this.sprite), 0, 0); // not actually (0,0), but the coordinates passed in ctx.translate
         ctx.restore();
     }
 
@@ -73,6 +73,58 @@ Enemy.prototype.isOutOfBounds = function() {
         return false;
     }
 };
+
+var Heart = function() {
+    this.sprite = 'images/Heart.png';
+    this.x = -99;
+    this.y = -99;
+}
+
+Heart.prototype.randomizeLocation = function() {
+    var randomx = Math.floor(Math.random() * 5)
+    console.log(randomx)
+    switch (randomx) {
+        case 0:
+            this.x = 0;
+            break;
+        case 1:
+            this.x = 100;
+            break;
+        case 2:
+            this.x = 200;
+            break;
+        case 3:
+            this.x = 300;
+            break;
+        case 4:
+            this.x = 400;
+            break;
+    }
+    var randomy = Math.floor(Math.random() * 3)
+    switch (randomy) {
+        case 0:
+            this.y = 75;
+            break;
+        case 1:
+            this.y = 155;
+            break;
+        case 2:
+            this.y = 235;
+            break;
+    }
+}
+
+Heart.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    console.log("Heart at " + this.x + ", " + this.y );
+}
+
+Heart.prototype.update = function(dt) {
+    if (Math.random() < .0003) {
+        this.randomizeLocation();
+    };
+}
+
 
 // Player Contstructor Method
 var Player = function() {
@@ -122,6 +174,7 @@ Player.prototype.update = function(){
 Player.prototype.render = function(){
 
     //Draw the Player's score and # of lives remaining
+    ctx.textAlign = "left";
     ctx.font = "30px Arial";
     ctx.clearRect(0,0,200,30);
     ctx.fillText("Score: " + this.score, 10, 30);
@@ -140,6 +193,11 @@ Player.prototype.render = function(){
         }
         this.x = 200;//0,100,200,300,400
         this.y = 370;//50,130,210,290,370
+    }
+        if (this.pickedUpHeart()) {
+        this.lives++;
+        heart.x = -99;
+        heart.y = -99;
     }
 };
 
@@ -175,6 +233,19 @@ Player.prototype.isHitByEnemy = function() {
     return collision;
 }
 
+Player.prototype.pickedUpHeart = function() {
+    var playerSquareX = Math.round(player.x/100);
+    var playerSquareY = Math.round(player.y/80);
+    var heartSquareX = Math.round((heart.x)/100);
+    var heartSquareY = Math.round((heart.y)/80);
+    if (playerSquareX === heartSquareX && playerSquareY === heartSquareY) {
+        return true;
+    } else {
+        return false;
+    };
+}
+
+
 // Function to allow the user to select the class of the player character
 // Currently class only determines the skin of the player character.
 function selectClass() {
@@ -201,8 +272,9 @@ function selectClass() {
 
 var player = new Player;
 selectClass();
+var heart = new Heart;
 var allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)]; // Initialize one enemy per row
-init()
+// init()
 
 
 // This listens for key presses and sends the keys to your
