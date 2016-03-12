@@ -50,7 +50,7 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        if (!this.gameOver) {
+        if (!gameOver) {
             update(dt);
             render();
 
@@ -213,7 +213,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        this.   gameOver = false;
+        gameOver = false;
         score = 0;
         allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)];
         var allItems = [new Heart(), new BlueGem(), new GreenGem(), new OrangeGem()];
