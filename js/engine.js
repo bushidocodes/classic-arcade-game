@@ -119,14 +119,22 @@ var Engine = (function(global) {
                 enemy.update(dt);
             });
         } else {
-            allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)]; // Initialize one enemy per row
-        }
+            // allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)]; // Initialize one enemy per row
+        };
 
         if (player) {
             player.update();
         } else {
-            player = new Player();
+            // player = new Player();
+        };
+
+        if (heart) {
+            heart.update();
+        } else {
+            heart = new Heart();
         }
+
+
                 // Now instantiate your objects.
     // Place all enemy objects in an array called allEnemies
     // Place the player object in a variable called player
@@ -168,6 +176,7 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
+                //console.log(Resources.get(rowImages[row]));
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
@@ -188,6 +197,8 @@ var Engine = (function(global) {
         });
 
         player.render();
+
+        heart.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -195,7 +206,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        gameOver = false;
+        this.   gameOver = false;
         score = 0;
         allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)];
         player = new Player();
@@ -218,8 +229,8 @@ var Engine = (function(global) {
         'images/char-cat-girl.png',
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
-        'images/char-princess-girl.png'
-
+        'images/char-princess-girl.png',
+        'images/Heart.png'
     ]);
     Resources.onReady(init);
 
