@@ -1,11 +1,11 @@
+"use strict";
 var score = 0;
 var sprites = [
     "images/char-boy.png",
     "images/char-cat-girl.png",
     "images/char-horn-girl.png",
     "images/char-pink-girl.png",
-    "images/char-princess-girl.png"
-    ]
+    "images/char-princess-girl.png"];
 // Enemy Constructor Method.
 // Parameter: y, the y location of the horizonal path taken by the enemies.
 var Enemy = function(y) {
@@ -74,15 +74,16 @@ Enemy.prototype.isOutOfBounds = function() {
     }
 };
 
-var Heart = function() {
-    this.sprite = 'images/Heart.png';
+// Item is an object intended to act as an abstract superclass for the different types of items generated in the game. Items are created off the gameboard by default.
+var Item = function() {
     this.x = -99;
     this.y = -99;
-}
+};
 
-Heart.prototype.randomizeLocation = function() {
-    var randomx = Math.floor(Math.random() * 5)
-    console.log(randomx)
+// Item's randomizeLocation() function places game items on random square in the top three rows of the gameboard, where the enemies spawn.
+Item.prototype.randomizeLocation = function() {
+    var randomx = Math.floor(Math.random() * 5);
+    //console.log(randomx)
     switch (randomx) {
         case 0:
             this.x = 0;
@@ -100,7 +101,7 @@ Heart.prototype.randomizeLocation = function() {
             this.x = 400;
             break;
     }
-    var randomy = Math.floor(Math.random() * 3)
+    var randomy = Math.floor(Math.random() * 3);
     switch (randomy) {
         case 0:
             this.y = 75;
@@ -112,18 +113,52 @@ Heart.prototype.randomizeLocation = function() {
             this.y = 235;
             break;
     }
-}
+};
 
-Heart.prototype.render = function() {
+Item.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    console.log("Heart at " + this.x + ", " + this.y );
-}
+};
 
-Heart.prototype.update = function(dt) {
-    if (Math.random() < .0003) {
+// Item's update() function is the mechanism that sets the spawn rate for items at random locations on the gameboard. This could be overridden by subclasses if desired.
+Item.prototype.update = function(dt) {
+    if (Math.random() < 0.0003) {
         this.randomizeLocation();
-    };
-}
+    }
+};
+
+
+// The following objects are subclasses of Item. The only unique attributes are the sprites.
+var Heart = function() {
+    Item.call(this);
+    this.sprite = 'images/Heart.png';
+};
+
+Heart.prototype = Object.create(Item.prototype);
+Heart.prototype.constructor = Heart;
+
+var BlueGem = function() {
+    Item.call(this);
+    this.sprite = 'images/Gem Blue.png';
+};
+
+BlueGem.prototype = Object.create(Item.prototype);
+BlueGem.prototype.constructor = BlueGem;
+
+var GreenGem = function() {
+    Item.call(this);
+    this.sprite = 'images/Gem Green.png';
+};
+
+GreenGem.prototype = Object.create(Item.prototype);
+GreenGem.prototype.constructor = GreenGem;
+
+var OrangeGem = function() {
+    Item.call(this);
+    this.sprite = 'images/Gem Orange.png';
+};
+
+OrangeGem.prototype = Object.create(Item.prototype);
+OrangeGem.prototype.constructor = OrangeGem;
 
 
 // Player Contstructor Method
@@ -135,8 +170,8 @@ var Player = function() {
     this.sprite = 'images/char-cat-girl.png';
     this.x = 200;//0,100,200,300,400
     this.y = 370;//50,130,210,290,370
+};
 
-}
 // Player Update function listens for keyboard input, moves the player on the gameboard, and handles the logic of player reaching top of screen
 Player.prototype.update = function(){
     Player.prototype.handleInput = function(input){
@@ -149,8 +184,8 @@ Player.prototype.update = function(){
             } else { //If the player reaches the top of the gameboard, respawn at the center of bottom row and add 100 points
                 this.score += 100;
                 console.log(this.score);
-                this.x = 200;//0,100,200,300,400
-                this.y = 370;//50,130,210,290,370
+                this.x = 200;    //0,100,200,300,400
+                this.y = 370;    //50,130,210,290,370
             }
             break;
         case "down":
@@ -194,10 +229,25 @@ Player.prototype.render = function(){
         this.x = 200;//0,100,200,300,400
         this.y = 370;//50,130,210,290,370
     }
-        if (this.pickedUpHeart()) {
-        this.lives++;
-        heart.x = -99;
-        heart.y = -99;
+    // This logic determines the outcome of picking up the item.
+    // TO-DO: Shift Logic into a method called impact() for each respective item.
+    let item = this.pickedUpItem();
+    //console.log(item);
+    if (this.pickedUpItem() != null) {
+        console.log("picked something up");
+        if (item instanceof Heart) {
+            this.lives++;
+        } else if (item instanceof BlueGem) {
+            this.score += 50;
+        } else if (item instanceof OrangeGem) {
+            this.score += 100;
+        } else if (item instanceof GreenGem) {
+            this.score += 150;
+        } else {
+            console.log ("Mystery Object");
+        }
+        item.x = -99;
+        item.y = -99;
     }
 };
 
@@ -220,7 +270,7 @@ Player.prototype.isHitByEnemy = function() {
     var collision = false;
     allEnemies.forEach( function(enemy) {
         let enemySquareX = 0;
-        let enemySquareY = Math.round((enemy.y)/80)
+        let enemySquareY = Math.round((enemy.y)/80);
         if (enemy.speed < 0) {
             enemySquareX = Math.round((enemy.x-101)/100);
         } else {
@@ -228,28 +278,29 @@ Player.prototype.isHitByEnemy = function() {
         }
         if (playerSquareX === enemySquareX && playerSquareY === enemySquareY) {
             collision = true;
-        };
+        }
     });
     return collision;
-}
+};
 
-Player.prototype.pickedUpHeart = function() {
+Player.prototype.pickedUpItem = function() {
     var playerSquareX = Math.round(player.x/100);
     var playerSquareY = Math.round(player.y/80);
-    var heartSquareX = Math.round((heart.x)/100);
-    var heartSquareY = Math.round((heart.y)/80);
-    if (playerSquareX === heartSquareX && playerSquareY === heartSquareY) {
-        return true;
-    } else {
-        return false;
-    };
-}
+    var pickUp = null;
+    allItems.forEach( function(item) {
+        let itemSquareX = Math.round((item.x)/100);
+        let itemSquareY = Math.round((item.y)/80);
+        if (playerSquareX === itemSquareX && playerSquareY === itemSquareY) {
+            pickUp = item;
+        }
+    });
+    return pickUp;
+};
 
 
 // Function to allow the user to select the class of the player character
 // Currently class only determines the skin of the player character.
 function selectClass() {
-    $(".charClass").append()
     for (var i = 0; i < sprites.length; i++) {
         $("#charClass").append("<img id='sprite-"+i+"-clicked' src=" + sprites[i] +"></img>");
         $( "#sprite-0-clicked" ).click(function() {
@@ -270,10 +321,17 @@ function selectClass() {
     }
 }
 
+
+// Now instantiate your objects.
+// Place all enemy objects in an array called allEnemies
+// Place the player object in a variable called player
+// Initialize the player
+
 var player = new Player;
 selectClass();
-var heart = new Heart;
+//var heart = new Heart;
 var allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)]; // Initialize one enemy per row
+var allItems = [new Heart(), new BlueGem(), new GreenGem(), new OrangeGem()];
 // init()
 
 

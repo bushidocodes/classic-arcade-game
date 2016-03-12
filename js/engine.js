@@ -13,7 +13,7 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-
+"use strict";
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -66,7 +66,7 @@ var Engine = (function(global) {
         } else {
             ctx.clearRect(0,0,canvas.width,canvas.height);
             ctx.textAlign = "center";
-            ctx.font ="60px Arial";
+            ctx.font = "60px Arial";
             ctx.fillText("GAME OVER", canvas.width/2,200);
             console.log(score);
             ctx.fillText(player.score + " points", canvas.width/2,300);
@@ -128,18 +128,21 @@ var Engine = (function(global) {
             // player = new Player();
         };
 
-        if (heart) {
-            heart.update();
-        } else {
-            heart = new Heart();
+        // if (heart) {
+        //     heart.update();
+        // } else {
+        //     heart = new Heart();
+        // }
+        if (allItems != null) {
+            allItems.forEach(function(item) {
+                item.update(dt);
+            });
         }
-
-
-                // Now instantiate your objects.
-    // Place all enemy objects in an array called allEnemies
-    // Place the player object in a variable called player
-     // Initialize the player
     }
+
+
+
+
 
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
@@ -192,13 +195,17 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        allEnemies.forEach(function(enemy) {
+        allEnemies.forEach(function (enemy) {
             enemy.render();
         });
 
         player.render();
 
-        heart.render();
+        allItems.forEach(function (item) {
+            item.render();
+        });
+
+        // heart.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -209,6 +216,7 @@ var Engine = (function(global) {
         this.   gameOver = false;
         score = 0;
         allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)];
+        var allItems = [new Heart(), new BlueGem(), new GreenGem(), new OrangeGem()];
         player = new Player();
 
         //selectClass();
@@ -230,7 +238,10 @@ var Engine = (function(global) {
         'images/char-horn-girl.png',
         'images/char-pink-girl.png',
         'images/char-princess-girl.png',
-        'images/Heart.png'
+        'images/Heart.png',
+        'images/Gem Blue.png',
+        'images/Gem Green.png',
+        'images/Gem Orange.png'
     ]);
     Resources.onReady(init);
 
