@@ -14,6 +14,7 @@
  * a little simpler to work with.
  */
 "use strict";
+var gameOver = false;
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -30,7 +31,7 @@ var Engine = (function(global) {
     //doc.main.appendChild(canvas);
     $("main").append(canvas);
 
-    var gameOver = false;
+    //var gameOver = false;
     var score = 0;
 
     /* This function serves as the kickoff point for the game loop itself
@@ -253,5 +254,5 @@ var Engine = (function(global) {
     // Make canvas global to be able to use width and height for in-bounds checking.
     global.canvas = canvas;
     global.init = init;
-    global.gameOver = gameOver;
+    //global.gameOver = gameOver;
 })(this);
