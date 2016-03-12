@@ -13,7 +13,7 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-var gameOver = false;
+
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
@@ -29,6 +29,9 @@ var Engine = (function(global) {
     canvas.height = 606;
     //doc.main.appendChild(canvas);
     $("main").append(canvas);
+
+    var gameOver = false;
+    var score = 0;
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -47,7 +50,7 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        if (!gameOver) {
+        if (!this.gameOver) {
             update(dt);
             render();
 
@@ -62,8 +65,11 @@ var Engine = (function(global) {
 
         } else {
             ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.textAlign = "center";
             ctx.font ="60px Arial";
-            ctx.fillText("GAME OVER", 80,200);
+            ctx.fillText("GAME OVER", canvas.width/2,200);
+            console.log(score);
+            ctx.fillText(player.score + " points", canvas.width/2,300);
         };
         win.requestAnimationFrame(main);
 
@@ -75,6 +81,7 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
+        console.log("init called");
 
         reset();
         lastTime = Date.now();
@@ -106,10 +113,24 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
-            enemy.update(dt);
-        });
-        player.update();
+        //console.log(allEnemies);
+        if (allEnemies != null) {
+            allEnemies.forEach(function(enemy) {
+                enemy.update(dt);
+            });
+        } else {
+            allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)]; // Initialize one enemy per row
+        }
+
+        if (player) {
+            player.update();
+        } else {
+            player = new Player();
+        }
+                // Now instantiate your objects.
+    // Place all enemy objects in an array called allEnemies
+    // Place the player object in a variable called player
+     // Initialize the player
     }
 
     /* This function initially draws the "game level", it will then call
@@ -174,7 +195,13 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        selectClass();
+        gameOver = false;
+        score = 0;
+        allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)];
+        player = new Player();
+
+        //selectClass();
+
         // noop
     }
 
@@ -203,4 +230,6 @@ var Engine = (function(global) {
     global.ctx = ctx;
     // Make canvas global to be able to use width and height for in-bounds checking.
     global.canvas = canvas;
+    global.init = init;
+    global.gameOver = gameOver;
 })(this);
