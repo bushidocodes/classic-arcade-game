@@ -3,7 +3,7 @@ Classic Arcade Game
 
 Classic Arcade Game is an overhead view action game reminiscent of games like Frogger. The game is built upon the HTML5 canvas element.
 
-![](.\images\classicArcadeGameScreenshotSmall.png)
+![](/images/classicArcadeGameScreenshotSmall.png)
 
 The player spawns at the bottom of the game board, and the central objective is to avoid getting hit by bug enemies and reach the top of the board. Upon reaching the top of the board, the player respawns at the bottom of the screen with 100 additional points. As points accumulate, the bug enemies speed up, making the game more difficult. Throughout the game, random pickups generate on the rows of the game board with enemies. These pickups include a heart, which provides an extra life, and gems, which increase the player's score by a value that varies based on the color. The player starts with three lives, and he or she loses a life when hit by an enemy. Running out of lives results in a Game Over.
 
