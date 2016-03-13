@@ -1,71 +1,76 @@
-"use strict";
+'use strict';
 var score = 0;
+var VERTICAL_STEP = 80; //pixels to vertically move player one square
+var HORIZONTAL_STEP = 100; //pixels to horizonally move player one square
 var sprites = [
-    "images/char-boy.png",
-    "images/char-cat-girl.png",
-    "images/char-horn-girl.png",
-    "images/char-pink-girl.png",
-    "images/char-princess-girl.png"];
-// Enemy Constructor Method.
-// Parameter: y, the y location of the horizonal path taken by the enemies.
+    'images/char-boy.png',
+    'images/char-cat-girl.png',
+    'images/char-horn-girl.png',
+    'images/char-pink-girl.png',
+    'images/char-princess-girl.png'];
+
+/**
+ * @description Represents an enemy. Invokes radomizeSpeed() and randomizeDirection() methods upon instantiation.
+ * @constructor
+ * @param {number} y - the y coordinate of the horizonal path taken by the enemy.
+ */
 var Enemy = function(y) {
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    // Movement speed of enemy. Starts at random number between 100-300. Top end of range increases in proportion to player score.
     this.y = y;
     this.randomizeSpeed();
     this.randomizeDirection();
 };
 
+/**
+ * @description Sets enemy's speed attribute to random value. Starts at random number between 100-300. Top end of range increases in proportion to player score.
+ */
 Enemy.prototype.randomizeSpeed = function() {
     this.speed = 100 + (200 + player.score/20) * Math.random();
 };
 
+/**
+ * @description andomly place enemies at the left or right edge of the screen and have them move horizonatally to the opposite side.
+ */
 Enemy.prototype.randomizeDirection = function() {
-    // Randomly place enemies at the left or right edge of the screen and have them move horizonatally to the opposite side.
     if (Math.random() < 0.5) {
         this.x = -100;
     } else {
-        this.x = 505 + 100; //TO-DO: Modify code to be able to access canvas object to get width value
+        this.x = 505 + 100; // TODO: Modify code to be able to access canvas object to get width value
         this.speed = -this.speed;
     }
 };
 
-
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+/**
+ * @description Update the enemy's position on the game board and randomly assign the enemy a new speed and heading when it moves off the gameboard
+ * @param {number} dt - a time delta between ticks
+ */
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
     this.x += dt * this.speed;
-    // When an enemy moves off the game board, randomly assign the enemy a new speed and heading
     if (this.isOutOfBounds()) {
         this.randomizeSpeed();
         this.randomizeDirection();
     }
 };
 
-// Draw the enemy on the screen, required method for game
+/**
+ * @description Draw the enemy on the screen, including flipping the enemy sprite if the enemy is moving from right to left,
+ */
 Enemy.prototype.render = function() {
     if (this.speed > 0) {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-        //console.log(this.sprite);
-    } else { // If the enemy is moving from right to left, flip the image so that the head is facing left.
+    } else {
         ctx.save();
         ctx.translate(this.x, this.y);
         ctx.scale(-1, 1);
         ctx.drawImage(Resources.get(this.sprite), 0, 0); // not actually (0,0), but the coordinates passed in ctx.translate
         ctx.restore();
     }
-
 };
 
-// 60,145,230
-
-// outOfBounds Convenience Function - Tests to see if an enemy moves off the game board. To ensure that the sprite is able to fully
-// scroll off the screen, out of bounds is treated a 100px out of the viewable area.
+/**
+ * @description outOfBounds Convenience Function - Tests to see if an enemy moves off the game board. To ensure that the sprite is able to fully scroll off the screen, out of bounds is treated a 100px out of the viewable area.
+ * @returns {boolean} - true means that the enemy is off the gameboard
+ */
 Enemy.prototype.isOutOfBounds = function() {
     if (this.x > canvas.width + 100 || this.x < -100) {
         return true;
@@ -74,16 +79,20 @@ Enemy.prototype.isOutOfBounds = function() {
     }
 };
 
-// Item is an object intended to act as an abstract superclass for the different types of items generated in the game. Items are created off the gameboard by default.
+/**
+ * @description Represents an Item, intended to act as an abstract superclass for the different types of items generated in the game. Items are created off the gameboard by default.
+ * @constructor
+ */
 var Item = function() {
     this.x = -99;
     this.y = -99;
 };
 
-// Item's randomizeLocation() function places game items on random square in the top three rows of the gameboard, where the enemies spawn.
+/**
+ * @description randomizeLocation() function places game items on random square in the top three rows of the gameboard, where the enemies spawn.
+ */
 Item.prototype.randomizeLocation = function() {
     var randomx = Math.floor(Math.random() * 5);
-    //console.log(randomx)
     switch (randomx) {
         case 0:
             this.x = 0;
@@ -115,19 +124,29 @@ Item.prototype.randomizeLocation = function() {
     }
 };
 
+/**
+ * @description Draw the item on the screen.
+ */
 Item.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Item's update() function is the mechanism that sets the spawn rate for items at random locations on the gameboard. This could be overridden by subclasses if desired.
+/**
+ * @description At random intervals, moves the Item to a random locations on the gameboard.
+ * @param {number} dt - a time delta between ticks
+ */
+//
 Item.prototype.update = function(dt) {
-    if (Math.random() < 0.0003) {
-        this.randomizeLocation();
-    }
+    Math.random() < 0.0003 ? this.randomizeLocation() : null;
+    // if (Math.random() < 0.0003) {
+    //     this.randomizeLocation();
+    // }
 };
 
-
-// The following objects are subclasses of Item. The only unique attributes are the sprites.
+/**
+ * @description Represents an Heart.
+ * @constructor
+ */
 var Heart = function() {
     Item.call(this);
     this.sprite = 'images/Heart.png';
@@ -136,6 +155,10 @@ var Heart = function() {
 Heart.prototype = Object.create(Item.prototype);
 Heart.prototype.constructor = Heart;
 
+/**
+ * @description Represents a Blue Gem.
+ * @constructor
+ */
 var BlueGem = function() {
     Item.call(this);
     this.sprite = 'images/Gem Blue.png';
@@ -144,6 +167,10 @@ var BlueGem = function() {
 BlueGem.prototype = Object.create(Item.prototype);
 BlueGem.prototype.constructor = BlueGem;
 
+/**
+ * @description Represents a Green Gem.
+ * @constructor
+ */
 var GreenGem = function() {
     Item.call(this);
     this.sprite = 'images/Gem Green.png';
@@ -152,6 +179,10 @@ var GreenGem = function() {
 GreenGem.prototype = Object.create(Item.prototype);
 GreenGem.prototype.constructor = GreenGem;
 
+/**
+ * @description Represents a Orange Gem.
+ * @constructor
+ */
 var OrangeGem = function() {
     Item.call(this);
     this.sprite = 'images/Gem Orange.png';
@@ -160,11 +191,11 @@ var OrangeGem = function() {
 OrangeGem.prototype = Object.create(Item.prototype);
 OrangeGem.prototype.constructor = OrangeGem;
 
-
-// Player Contstructor Method
+/**
+ * @description Represents a Player.
+ * @constructor
+ */
 var Player = function() {
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
     this.lives = 3;
     this.score = 0;
     this.sprite = 'images/char-cat-girl.png';
@@ -172,69 +203,69 @@ var Player = function() {
     this.y = 370;//50,130,210,290,370
 };
 
-// Player Update function listens for keyboard input, moves the player on the gameboard, and handles the logic of player reaching top of screen
+/**
+ * @description listens for keyboard input, moves the player on the gameboard, and handles the logic of player reaching top of screen
+ */
 Player.prototype.update = function(){
     Player.prototype.handleInput = function(input){
-    var verticalStep = 80; //pixels to vertically move player one square
-    var horizontalStep = 100; //pixels to horizonally move player one square
     switch (input) {
-        case "up":
-            if ( this.y - verticalStep > 0) { //If there is a space above the player, move the player up
-                this.y -= verticalStep;
+        case 'up':
+            if ( this.y - VERTICAL_STEP > 0) { //If there is a space above the player, move the player up
+                this.y -= VERTICAL_STEP;
             } else { //If the player reaches the top of the gameboard, respawn at the center of bottom row and add 100 points
                 this.score += 100;
-                console.log(this.score);
                 this.x = 200;    //0,100,200,300,400
                 this.y = 370;    //50,130,210,290,370
             }
             break;
-        case "down":
-            if ( this.y + verticalStep < canvas.height -160) { // If there is a space below the player, move the player down
-                this.y += verticalStep;
+        case 'down':
+            if ( this.y + VERTICAL_STEP < canvas.height -160) { // If there is a space below the player, move the player down
+                this.y += VERTICAL_STEP;
             }
             break;
-        case "left":
-            if ( this.x - horizontalStep >= 0) { // If there is a space to the left of the player, move the player left
-                this.x -= horizontalStep;
+        case 'left':
+            if ( this.x - HORIZONTAL_STEP >= 0) { // If there is a space to the left of the player, move the player left
+                this.x -= HORIZONTAL_STEP;
             }
             break;
-        case "right":
-            if ( this.x + horizontalStep <= canvas.width-105) { // If there is a space to the right of the player, move the player right
-                this.x += horizontalStep;
+        case 'right':
+            if ( this.x + HORIZONTAL_STEP <= canvas.width-105) { // If there is a space to the right of the player, move the player right
+                this.x += HORIZONTAL_STEP;
             }
             break;
-    }
+        }
+    };
 };
-};
+
+/**
+ * @description Draw the score, # of lives, and the player sprite on the screen. Also contains the logic for outcome logic when the player touches enemies and items.
+ */
 Player.prototype.render = function(){
-
-    //Draw the Player's score and # of lives remaining
-    ctx.textAlign = "left";
-    ctx.font = "30px Arial";
+    // Draw the score, # of lives
+    ctx.textAlign = 'left';
+    ctx.font = '30px Arial';
     ctx.clearRect(0,0,200,30);
-    ctx.fillText("Score: " + this.score, 10, 30);
+    ctx.fillText('Score: ' + this.score, 10, 30);
     ctx.clearRect(380,0,200,30);
-    ctx.fillText("Lives: " + player.lives, 380,30);
+    ctx.fillText('Lives: ' + player.lives, 380,30);
 
-    //Draw the Player's Sprite at it's current location
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 
     // If the player is hit by an enemy, decrement the life counter. If the player is out of lives, set gameOver to true.
     // If the player still hase lives, respawn at the center of the bottom row of the gameboard.
     if (this.isHitByEnemy()) {
         this.lives--;
-        if (this.lives <= 0) {
-            gameOver = true;
-        }
+        gameOver = this.lives <= 0 ? true : false;
+        // if (this.lives <= 0) {
+        //     gameOver = true;
+        // }
         this.x = 200;//0,100,200,300,400
         this.y = 370;//50,130,210,290,370
     }
     // This logic determines the outcome of picking up the item.
-    // TO-DO: Shift Logic into a method called impact() for each respective item.
+    // TODO: Shift Logic into a method called impact() for each respective item.
     let item = this.pickedUpItem();
-    //console.log(item);
     if (this.pickedUpItem() != null) {
-        console.log("picked something up");
         if (item instanceof Heart) {
             this.lives++;
         } else if (item instanceof BlueGem) {
@@ -243,27 +274,29 @@ Player.prototype.render = function(){
             this.score += 100;
         } else if (item instanceof GreenGem) {
             this.score += 150;
-        } else {
-            console.log ("Mystery Object");
         }
         item.x = -99;
         item.y = -99;
     }
 };
 
-
-// outOfBounds Convenience Function - Tests to see if an enemy moves off the game board. To ensure that the sprite is able to fully
-// scroll off the screen, out of bounds is treated a 100px out of the viewable area.
+/**
+ * @description outOfBounds Convenience Function - Tests to see if an player moves off the game board. To ensure that the sprite is able to fully scroll off the screen, out of bounds is treated a 100px out of the viewable area.
+ * @returns {boolean} - true means that the player is off the gameboard
+ */
 Player.prototype.isOutOfBounds = function() {
-    if (this.x > canvas.width + 100 || this.x < - 100) {
-        return true;
-    } else {
-        return false;
-    }
+    this.x > canvas.width + 100 || this.x < - 100 ? true : false;
+    // if (this.x > canvas.width + 100 || this.x < - 100) {
+    //     return true;
+    // } else {
+    //     return false;
+    // }
 };
 
-// The Player's isHitByEnemy function checks for player collision with an enemy based on the grid system
-// If the player is in the same gameboard square as an enemy, the function returns true.
+/**
+ * @description isHitByEnemy Convenience Function - checks for player collision with an enemy based on the grid system.
+ * @returns {boolean} - true means that the player is in the same gameboard square as an enemy
+ */
 Player.prototype.isHitByEnemy = function() {
     var playerSquareX = Math.round(player.x/100);
     var playerSquareY = Math.round(player.y/80);
@@ -271,11 +304,13 @@ Player.prototype.isHitByEnemy = function() {
     allEnemies.forEach( function(enemy) {
         let enemySquareX = 0;
         let enemySquareY = Math.round((enemy.y)/80);
-        if (enemy.speed < 0) {
-            enemySquareX = Math.round((enemy.x-101)/100);
-        } else {
-            enemySquareX = Math.round(enemy.x/100);
-        }
+        enemySquareX = enemy.speed < 0 ? Math.round((enemy.x-101)/100) : Math.round(enemy.x/100);
+        // if (enemy.speed < 0) {
+        //     enemySquareX = Math.round((enemy.x-101)/100);
+        // } else {
+        //     enemySquareX = Math.round(enemy.x/100);
+        // }
+        // collision = (playerSquareX === enemySquareX && playerSquareY === enemySquareY) ? true : false;
         if (playerSquareX === enemySquareX && playerSquareY === enemySquareY) {
             collision = true;
         }
@@ -283,6 +318,10 @@ Player.prototype.isHitByEnemy = function() {
     return collision;
 };
 
+/**
+ * @description pickedUpItem Convenience Function - checks for player collision with an item based on the grid system.
+ * @returns {Item} - the item that is in the same grid square as the player
+ */
 Player.prototype.pickedUpItem = function() {
     var playerSquareX = Math.round(player.x/100);
     var playerSquareY = Math.round(player.y/80);
@@ -290,6 +329,7 @@ Player.prototype.pickedUpItem = function() {
     allItems.forEach( function(item) {
         let itemSquareX = Math.round((item.x)/100);
         let itemSquareY = Math.round((item.y)/80);
+        //pickUp = (playerSquareX === itemSquareX && playerSquareY === itemSquareY) ? item : null;
         if (playerSquareX === itemSquareX && playerSquareY === itemSquareY) {
             pickUp = item;
         }
@@ -297,25 +337,25 @@ Player.prototype.pickedUpItem = function() {
     return pickUp;
 };
 
-
-// Function to allow the user to select the class of the player character
-// Currently class only determines the skin of the player character.
+/**
+ * @description Function to allow the user to select the class of the player character. Currently class only determines the skin of the player character.
+ */
 function selectClass() {
     for (var i = 0; i < sprites.length; i++) {
-        $("#charClass").append("<img id='sprite-"+i+"-clicked' src=" + sprites[i] +"></img>");
-        $( "#sprite-0-clicked" ).click(function() {
+        $('#charClass').append('<img id="sprite-'+i+'-clicked" src=' + sprites[i] +'></img>');
+        $( '#sprite-0-clicked' ).click(function() {
             player.sprite = sprites[0];
         });
-        $( "#sprite-1-clicked" ).click(function() {
+        $( '#sprite-1-clicked' ).click(function() {
             player.sprite = sprites[1];
         });
-        $( "#sprite-2-clicked" ).click(function() {
+        $( '#sprite-2-clicked' ).click(function() {
             player.sprite = sprites[2];
         });
-        $( "#sprite-3-clicked" ).click(function() {
+        $( '#sprite-3-clicked' ).click(function() {
             player.sprite = sprites[3];
         });
-        $( "#sprite-4-clicked" ).click(function() {
+        $( '#sprite-4-clicked' ).click(function() {
             player.sprite = sprites[4];
         });
     }
@@ -323,16 +363,14 @@ function selectClass() {
 
 
 // Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-// Initialize the player
-
+// Append the Character Class Selector to the web page
+// Place all enemy objects in an array called allEnemies
+// Place all item objects in an array called allItems
 var player = new Player;
 selectClass();
-//var heart = new Heart;
 var allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)]; // Initialize one enemy per row
 var allItems = [new Heart(), new BlueGem(), new GreenGem(), new OrangeGem()];
-// init()
 
 
 // This listens for key presses and sends the keys to your
