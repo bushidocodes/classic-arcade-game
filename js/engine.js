@@ -13,7 +13,7 @@
  * the canvas' context (ctx) object globally available to make writing app.js
  * a little simpler to work with.
  */
-"use strict";
+'use strict';
 var gameOver = false;
 var Engine = (function(global) {
     /* Predefine the variables we'll be using within this scope,
@@ -28,14 +28,12 @@ var Engine = (function(global) {
 
     canvas.width = 505;
     canvas.height = 606;
-    //doc.main.appendChild(canvas);
-    $("main").append(canvas);
+    $('main').append(canvas);
 
-    //var gameOver = false;
     var score = 0;
 
-    /* This function serves as the kickoff point for the game loop itself
-     * and handles properly calling the update and render methods.
+    /**
+     * @description serves as the kickoff point for the game loop itself, including calling the update and render methods. Also contains the game over logic
      */
     function main() {
 
@@ -60,80 +58,56 @@ var Engine = (function(global) {
             */
             lastTime = now;
 
-            /* Use the browser's requestAnimationFrame function to call this
-            * function again as soon as the browser is able to draw another frame.
-            */
+
 
         } else {
+            // Draw the Game Over Screen
             ctx.clearRect(0,0,canvas.width,canvas.height);
-            ctx.textAlign = "center";
-            ctx.font = "60px Arial";
-            ctx.fillText("GAME OVER", canvas.width/2,200);
+            ctx.textAlign = 'center';
+            ctx.font = '60px Arial';
+            ctx.fillText('GAME OVER', canvas.width/2,200);
             console.log(score);
-            ctx.fillText(player.score + " points", canvas.width/2,300);
+            ctx.fillText(player.score + ' points', canvas.width/2,300);
         };
+        /* Use the browser's requestAnimationFrame function to call this
+        * function again as soon as the browser is able to draw another frame.
+        */
         win.requestAnimationFrame(main);
 
 
     }
 
-    /* This function does some initial setup that should only occur once,
-     * particularly setting the lastTime variable that is required for the
-     * game loop.
+    /**
+     * @description This function does some initial setup that should only occur once, particularly setting the lastTime variable that is required for the game loop.
      */
     function init() {
-        console.log("init called");
-
         reset();
         lastTime = Date.now();
-        // while (!gameOver) {
-            main();
-        // }
-
+        main();
     }
 
-    /* This function is called by main (our game loop) and itself calls all
-     * of the functions which may need to update entity's data. Based on how
-     * you implement your collision detection (when two entities occupy the
-     * same space, for instance when your character should die), you may find
-     * the need to add an additional function call here. For now, we've left
-     * it commented out - you may or may not want to implement this
-     * functionality this way (you could just implement collision detection
-     * on the entities themselves within your app.js file).
+    /*
+     * @description Calls updateEntities(). This is an alternate hook for collission detection, but is currently unused.
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
     }
 
-    /* This is called by the update function and loops through all of the
-     * objects within your allEnemies array as defined in app.js and calls
-     * their update() methods. It will then call the update function for your
-     * player object. These update methods should focus purely on updating
-     * the data/properties related to the object. Do your drawing in your
-     * render methods.
+    /*
+     * @description Loops through all of the objects within your allEnemies array as defined in app.js and calls their update() methods. It will then call the update function for your player object. These update methods should focus purely on updating the data/properties related to the object. Do your drawing in your render methods.
+     * @param {number} dt - a time delta between ticks
      */
     function updateEntities(dt) {
-        //console.log(allEnemies);
         if (allEnemies != null) {
             allEnemies.forEach(function(enemy) {
                 enemy.update(dt);
             });
-        } else {
-            // allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)]; // Initialize one enemy per row
         };
 
         if (player) {
             player.update();
-        } else {
-            // player = new Player();
         };
 
-        // if (heart) {
-        //     heart.update();
-        // } else {
-        //     heart = new Heart();
-        // }
         if (allItems != null) {
             allItems.forEach(function(item) {
                 item.update(dt);
@@ -141,20 +115,16 @@ var Engine = (function(global) {
         }
     }
 
-
-
-
-
-    /* This function initially draws the "game level", it will then call
-     * the renderEntities function. Remember, this function is called every
-     * game tick (or loop of the game engine) because that's how games work -
-     * they are flipbooks creating the illusion of animation but in reality
-     * they are just drawing the entire screen over and over.
+    /*
+     * @description Invoked every game tick (loop of the game engine). Draws the gameboard and then calls renderEntities()
      */
+
     function render() {
-        /* This array holds the relative URL to the image used
-         * for that particular row of the game level.
+        /*
+         * This array holds the relative URL to the image used for that particular row of the game level.
+         * This means that each row has the same tile type.
          */
+        // TODO: Allow for variation of tile types within a row
         var rowImages = [
                 'images/water-block.png',   // Top row is water
                 'images/stone-block.png',   // Row 1 of 3 of stone
@@ -180,7 +150,6 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
-                //console.log(Resources.get(rowImages[row]));
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
@@ -188,14 +157,11 @@ var Engine = (function(global) {
         renderEntities();
     }
 
-    /* This function is called by the render function and is called on each game
-     * tick. Its purpose is to then call the render functions you have defined
-     * on your enemy and player entities within app.js
+    /*
+     * @description Invoked by the render function and thus called on each game tick (loop of the game engine).
+     * Calls the render functions you have defined in the player, item, and enemy entities in app.js
      */
     function renderEntities() {
-        /* Loop through all of the objects within the allEnemies array and call
-         * the render function you have defined.
-         */
         allEnemies.forEach(function (enemy) {
             enemy.render();
         });
@@ -205,13 +171,10 @@ var Engine = (function(global) {
         allItems.forEach(function (item) {
             item.render();
         });
-
-        // heart.render();
     }
 
-    /* This function does nothing but it could have been a good place to
-     * handle game reset states - maybe a new game menu or a game over screen
-     * those sorts of things. It's only called once by the init() method.
+    /*
+     * @description Clears gameOver state, resets score, and reinstatiates player, enemies, and items.
      */
     function reset() {
         gameOver = false;
@@ -219,10 +182,6 @@ var Engine = (function(global) {
         allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)];
         var allItems = [new Heart(), new BlueGem(), new GreenGem(), new OrangeGem()];
         player = new Player();
-
-        //selectClass();
-
-        // noop
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -254,5 +213,4 @@ var Engine = (function(global) {
     // Make canvas global to be able to use width and height for in-bounds checking.
     global.canvas = canvas;
     global.init = init;
-    //global.gameOver = gameOver;
 })(this);
