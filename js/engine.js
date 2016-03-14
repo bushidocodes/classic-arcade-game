@@ -30,7 +30,7 @@ var Engine = (function(global) {
     canvas.height = 606;
     $('main').append(canvas);
 
-    var score = 0;
+    //var score = 0;
 
     /**
      * @description serves as the kickoff point for the game loop itself, including calling the update and render methods. Also contains the game over logic
@@ -66,7 +66,6 @@ var Engine = (function(global) {
             ctx.textAlign = 'center';
             ctx.font = '60px Arial';
             ctx.fillText('GAME OVER', canvas.width/2,200);
-            console.log(score);
             ctx.fillText(player.score + ' points', canvas.width/2,300);
         };
         /* Use the browser's requestAnimationFrame function to call this
@@ -133,8 +132,6 @@ var Engine = (function(global) {
                 'images/grass-block.png',   // Row 1 of 2 of grass
                 'images/grass-block.png'    // Row 2 of 2 of grass
             ],
-            numRows = 6,
-            numCols = 5,
             row, col;
 
         /* Loop through the number of rows and columns we've defined above
@@ -150,7 +147,7 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
-                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
+                ctx.drawImage(Resources.get(rowImages[row]), col * TILE_WIDTH, row * TILE_HEIGHT);
             }
         }
 
@@ -178,10 +175,10 @@ var Engine = (function(global) {
      */
     function reset() {
         gameOver = false;
-        score = 0;
-        allEnemies = [new Enemy(60), new Enemy(145), new Enemy(230)];
-        var allItems = [new Heart(), new BlueGem(), new GreenGem(), new OrangeGem()];
+        //var score = 0;
         player = new Player();
+        allEnemies = [new Enemy(1), new Enemy(2), new Enemy(3)];
+        allItems = [new Heart(), new BlueGem(), new GreenGem(), new OrangeGem()];
     }
 
     /* Go ahead and load all of the images we know we're going to need to
