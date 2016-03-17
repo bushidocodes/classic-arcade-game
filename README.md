@@ -5,7 +5,17 @@ Classic Arcade Game is an overhead view action game reminiscent of games like Fr
 
 ![](/images/classicArcadeGameScreenshotSmall.png)
 
-The player spawns at the bottom of the game board, and the central objective is to avoid getting hit by bug enemies and reach the top of the board. Upon reaching the top of the board, the player respawns at the bottom of the screen with 100 additional points. As points accumulate, the bug enemies speed up, making the game more difficult. Throughout the game, random pickups generate on the rows of the game board with enemies. These pickups include a heart, which provides an extra life, and gems, which increase the player's score by a value that varies based on the color. The player starts with three lives, and he or she loses a life when hit by an enemy. Running out of lives results in a Game Over.
+Story
+==============================
+The Sprite Kingdom is under attack by the elite Swarm Brigade of the Bug Imperium, and the Sprite Castle has fallen! In his last dying breath, the King asked all sprite subjects to flee to royal ships waiting to evacuate. Save as many sprites as you can, being sure to grab as much treasure as possible.
+
+How To Play
+===============================
+
+Keyboard Controls: Directional Arrows
+Touch Controls: Not yet developed. Stay tuned!
+
+Your sprite generates at the bottom of the game board, and the central objective is to evade the swarm and reach the fleet just off the coast. A single hit by a bug results in the sudden death of the sprite, decreasing your life count by one and regenerating a new sprite if you have lives remaining. Upon reaching the top of the board, your sprite has escaped, awarding you 100 points, and a new sprite appear at the bottom of the screen. Save as many sprites as you can before you run out of lives, but be careful, as the Swarm Brigade speeds up as you build up points. As your sprite escapes, be on the lookout for the appearance of items on the gameboard, including hearts, which provides extra life, and gems, which increase the player's score by a value that varies based on the gem color. You start with three lives, and running out of lives results in a Game Over.
 
 Run on the Web
 ===============================
