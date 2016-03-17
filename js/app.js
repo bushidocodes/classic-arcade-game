@@ -96,7 +96,7 @@ var Item = function() {
  */
 Item.prototype.randomizeLocation = function() {
     this.xInTiles = Math.floor(Math.random() * numCols);
-    this.yInTiles = Math.floor(Math.random() * (numRows-1) + 1); // randomly select a row other than row 0
+    this.yInTiles = Math.floor(Math.random() * (numRows-1-2) + 1); // randomly select rows 1, 2, or 3. Avoid rows 0, 4, or 5.
 };
 
 /**
@@ -111,7 +111,7 @@ Item.prototype.render = function() {
         Resources.get(this.sprite).width * this.resizeFactor,
         Resources.get(this.sprite).height * this.resizeFactor
     );
-    ctx.fillRect( this.xInTiles * TILE_WIDTH + SPRITE_X_OFFSET, this.yInTiles * TILE_HEIGHT + SPRITE_Y_OFFSET, 10, 10);
+    //ctx.fillRect( this.xInTiles * TILE_WIDTH + SPRITE_X_OFFSET, this.yInTiles * TILE_HEIGHT + SPRITE_Y_OFFSET, 10, 10);
 };
 
 /**
