@@ -19,21 +19,21 @@ Your sprite generates at the bottom of the game board, and the central objective
 
 Run on the Web
 ===============================
-[Play me on spmcb.com](http://spmcb.com/classic-arcade-game/)
+[Play me](http://bushidocodes.github.io/classic-arcade-game/)
 
 Local Installation
 ===============================
 
 In BASH
 ```Bash
-$ git clone https://github.com/spmcbride1201/classic-arcade-game
+$ git clone https://github.com/bushidocodes/classic-arcade-game
 $ cd classic-arcade-game
 $ open index.html
 ```
 
 In PowerShell
 ```PowerShell
-git clone https://github.com/spmcbride1201/classic-arcade-game
+git clone https://github.com/bushidocodes/classic-arcade-game
 cd classic-arcade-game
 Start-Process -FilePath index.html
 ```
