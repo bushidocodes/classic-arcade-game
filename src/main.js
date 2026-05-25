@@ -8,6 +8,10 @@ const KEY_MAP = {
     ArrowDown: 'down',
 };
 
+document.addEventListener('keydown', e => {
+    if (e.key in KEY_MAP) e.preventDefault();
+});
+
 document.addEventListener('keyup', e => {
     const player = getPlayer();
     if (player && KEY_MAP[e.key]) {
