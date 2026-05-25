@@ -1,3 +1,32 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 body {
+    margin: 0;
+    font-family: Arial, sans-serif;
     text-align: center;
+}
+
+.layout {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.controls {
+    margin: 8px 0;
+}
+
+.audio-row {
+    margin: 8px 0;
+}
+
+#charClass {
+    margin-top: 8px;
+}
+
+#charClass img {
+    cursor: pointer;
+    margin: 4px;
 }
