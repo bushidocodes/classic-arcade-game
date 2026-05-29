@@ -24,21 +24,23 @@ Run on the Web
 Local Installation
 ===============================
 
-In BASH
-```Bash
-$ git clone https://github.com/bushidocodes/classic-arcade-game
-$ cd classic-arcade-game
-$ open index.html
-```
+This project uses [Vite](https://vitejs.dev/) and must be served via a dev server — opening `index.html` directly over `file://` will not work because the app uses ES modules with absolute paths.
 
-In PowerShell
-```PowerShell
+```bash
 git clone https://github.com/bushidocodes/classic-arcade-game
 cd classic-arcade-game
-Start-Process -FilePath index.html
+npm install
+npm run dev
 ```
 
-**Note: The source currently is bundled with JQuery 2.2 and Bootstrap 3.3.6, and the files are intermingled in the js, css, font directories. I intend to clean up dependencies in the future through bower or npm.**
+Then open the local URL printed by Vite (typically `http://localhost:5173`).
+
+To build and preview a production bundle:
+
+```bash
+npm run build
+npm run preview
+```
 
 Credits
 ===============================
