@@ -38,7 +38,7 @@ export class Player {
 
     update(enemies, items) {
         if (this.isHitByEnemy(enemies)) {
-            this.lives--;
+            this.lives = Math.max(0, this.lives - 1);
             this.moveToStart();
         }
         const item = this.pickedUpItem(items);
