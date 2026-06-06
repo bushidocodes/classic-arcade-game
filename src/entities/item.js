@@ -39,7 +39,7 @@ export class Heart extends Item {
         super();
         this.sprite = 'images/Heart.png';
     }
-    onPickup(player) { player.lives++; }
+    onPickup(player) { player.lives = Math.min(player.lives + 1, 9); }
 }
 
 export class BlueGem extends Item {
