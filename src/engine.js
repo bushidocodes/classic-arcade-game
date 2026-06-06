@@ -23,16 +23,16 @@ function main(timestamp) {
     if (!gameOver) {
         update(dt);
         render();
+        lastTime = timestamp;
+        animFrameId = requestAnimationFrame(main);
     } else {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.textAlign = 'center';
         ctx.font = '60px Arial';
         ctx.fillText('GAME OVER', canvas.width / 2, 200);
         ctx.fillText(`${player.score} points`, canvas.width / 2, 300);
+        animFrameId = null;
     }
-
-    lastTime = timestamp;
-    animFrameId = requestAnimationFrame(main);
 }
 
 function update(dt) {
