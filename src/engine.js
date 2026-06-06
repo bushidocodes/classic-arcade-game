@@ -14,17 +14,16 @@ let gameOver = false;
 let player = null;
 let allEnemies = [];
 let allItems = [];
-let lastTime = 0;
+let lastTime;
 let animFrameId = null;
 
-function main() {
-    const now = Date.now();
-    const dt = (now - lastTime) / 1000;
+function main(timestamp) {
+    const dt = lastTime !== undefined ? (timestamp - lastTime) / 1000 : 0;
 
     if (!gameOver) {
         update(dt);
         render();
-        lastTime = now;
+        lastTime = timestamp;
         animFrameId = requestAnimationFrame(main);
     } else {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -71,8 +70,8 @@ export function getPlayer() {
 
 export function init() {
     reset();
-    lastTime = Date.now();
-    main();
+    lastTime = undefined;
+    main(performance.now());
 }
 
 Resources.load(IMAGES_TO_LOAD);
