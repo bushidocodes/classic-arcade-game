@@ -11,6 +11,11 @@ function _load(url) {
         pendingLoads.delete(url);
         if (isReady()) readyCallbacks.forEach(fn => fn());
     };
+    img.onerror = () => {
+        console.warn(`Failed to load image: ${url}`);
+        pendingLoads.delete(url);
+        if (isReady()) readyCallbacks.forEach(fn => fn());
+    };
     img.src = url;
 }
 
