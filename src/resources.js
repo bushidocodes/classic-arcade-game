@@ -2,6 +2,19 @@ const resourceCache = new Map();
 const pendingLoads = new Set();
 const readyCallbacks = [];
 
+// A 1×1 transparent canvas used as a safe fallback when a requested image is
+// missing or failed to load. drawImage() accepts CanvasImageSource, so this
+// prevents TypeErrors without altering visible rendering.
+let _fallbackCanvas = null;
+function getFallback() {
+    if (!_fallbackCanvas) {
+        _fallbackCanvas = document.createElement('canvas');
+        _fallbackCanvas.width = 1;
+        _fallbackCanvas.height = 1;
+    }
+    return _fallbackCanvas;
+}
+
 function _load(url) {
     if (resourceCache.has(url)) return;
     pendingLoads.add(url);
@@ -29,7 +42,12 @@ export const Resources = {
         urls.forEach(_load);
     },
     get(url) {
-        return resourceCache.get(url);
+        const img = resourceCache.get(url);
+        if (img == null) {
+            console.warn(`Resources.get: image not found in cache: ${url}`);
+            return getFallback();
+        }
+        return img;
     },
     isReady,
     onReady(fn) {
