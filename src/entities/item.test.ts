@@ -25,7 +25,7 @@ describe('Item', () => {
 });
 
 describe('Heart', () => {
-    let player;
+    let player: { lives: number; score: number };
 
     beforeEach(() => {
         player = { lives: 3, score: 0 };
@@ -47,7 +47,7 @@ describe('Heart', () => {
 
 describe('BlueGem', () => {
     it('adds 50 to score on pickup', () => {
-        const player = { score: 0 };
+        const player = { score: 0, lives: 0 };
         new BlueGem().onPickup(player);
         expect(player.score).toBe(50);
     });
@@ -55,7 +55,7 @@ describe('BlueGem', () => {
 
 describe('OrangeGem', () => {
     it('adds 100 to score on pickup', () => {
-        const player = { score: 0 };
+        const player = { score: 0, lives: 0 };
         new OrangeGem().onPickup(player);
         expect(player.score).toBe(100);
     });
@@ -63,7 +63,7 @@ describe('OrangeGem', () => {
 
 describe('GreenGem', () => {
     it('adds 150 to score on pickup', () => {
-        const player = { score: 0 };
+        const player = { score: 0, lives: 0 };
         new GreenGem().onPickup(player);
         expect(player.score).toBe(150);
     });

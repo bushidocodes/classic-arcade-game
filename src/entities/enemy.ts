@@ -2,8 +2,13 @@ import { NUM_COLS, TILE_WIDTH, TILE_HEIGHT, SPRITE_X_OFFSET, SPRITE_Y_OFFSET } f
 import { Resources } from '../resources.js';
 
 export class Enemy {
-    constructor(yInTiles) {
-        this.sprite = 'images/enemy-bug.png';
+    sprite: string = 'images/enemy-bug.png';
+    yInTiles: number;
+    x: number;
+    xInTiles: number;
+    speed: number = 0;
+
+    constructor(yInTiles: number) {
         this.yInTiles = yInTiles;
         this.x = -TILE_WIDTH;
         this.xInTiles = Math.floor(this.x / TILE_WIDTH);
@@ -11,11 +16,11 @@ export class Enemy {
         this.randomizeDirection();
     }
 
-    randomizeSpeed(playerScore = 0) {
+    randomizeSpeed(playerScore: number = 0): void {
         this.speed = 100 + (200 + playerScore / 20) * Math.random();
     }
 
-    randomizeDirection() {
+    randomizeDirection(): void {
         if (Math.random() < 0.5) {
             this.x = -TILE_WIDTH;
         } else {
@@ -24,7 +29,7 @@ export class Enemy {
         }
     }
 
-    update(dt, playerScore = 0) {
+    update(dt: number, playerScore: number = 0): void {
         this.x += dt * this.speed;
         this.xInTiles = Math.floor(this.x / TILE_WIDTH);
         if (this.isOutOfBounds()) {
@@ -33,7 +38,7 @@ export class Enemy {
         }
     }
 
-    render(ctx) {
+    render(ctx: CanvasRenderingContext2D): void {
         const img = Resources.get(this.sprite);
         if (this.speed > 0) {
             ctx.drawImage(img,
@@ -52,7 +57,7 @@ export class Enemy {
         }
     }
 
-    isOutOfBounds() {
+    isOutOfBounds(): boolean {
         return this.xInTiles < -1 || this.xInTiles > NUM_COLS;
     }
 }

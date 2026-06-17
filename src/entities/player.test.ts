@@ -1,9 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Player } from './player.js';
 import { NUM_ROWS, NUM_COLS } from '../config.js';
+import type { Collidable } from '../types.js';
 
 describe('Player', () => {
-    let player;
+    let player: Player;
 
     beforeEach(() => {
         player = new Player();
@@ -149,7 +150,7 @@ describe('Player', () => {
             player.xInTiles = 1;
             player.yInTiles = 2;
             let pickupCalled = false;
-            const item = {
+            const item: Collidable = {
                 xInTiles: 1,
                 yInTiles: 2,
                 onPickup(p) { pickupCalled = true; p.score += 50; },

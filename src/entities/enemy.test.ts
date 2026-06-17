@@ -3,7 +3,7 @@ import { Enemy } from './enemy.js';
 import { NUM_COLS, TILE_WIDTH } from '../config.js';
 
 describe('Enemy', () => {
-    let enemy;
+    let enemy: Enemy;
 
     beforeEach(() => {
         enemy = new Enemy(1);

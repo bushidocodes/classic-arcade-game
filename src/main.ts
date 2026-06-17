@@ -1,7 +1,8 @@
 import { init, getPlayer } from './engine.js';
 import { SPRITES } from './config.js';
+import type { Direction } from './types.js';
 
-const KEY_MAP = {
+const KEY_MAP: Partial<Record<string, Direction>> = {
     ArrowLeft: 'left',
     ArrowUp: 'up',
     ArrowRight: 'right',
@@ -14,14 +15,15 @@ document.addEventListener('keydown', e => {
 
 document.addEventListener('keyup', e => {
     const player = getPlayer();
-    if (player && KEY_MAP[e.key]) {
-        player.handleInput(KEY_MAP[e.key]);
+    const dir = KEY_MAP[e.key];
+    if (player && dir) {
+        player.handleInput(dir);
     }
 });
 
-document.getElementById('new-game-btn').addEventListener('click', init);
+document.getElementById('new-game-btn')!.addEventListener('click', init);
 
-const charClassEl = document.getElementById('charClass');
+const charClassEl = document.getElementById('charClass')!;
 SPRITES.forEach(src => {
     const img = document.createElement('img');
     img.src = src;

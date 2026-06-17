@@ -1,20 +1,24 @@
 import { NUM_ROWS, NUM_COLS, TILE_WIDTH, TILE_HEIGHT, SPRITE_X_OFFSET, SPRITE_Y_OFFSET } from '../config.js';
 import { Resources } from '../resources.js';
+import type { Direction, Positioned, Collidable, PlayerLike } from '../types.js';
 
-export class Player {
+export class Player implements PlayerLike {
+    lives: number = 3;
+    score: number = 0;
+    sprite: string = 'images/char-cat-girl.png';
+    xInTiles: number = 2;
+    yInTiles: number = 5;
+
     constructor() {
-        this.lives = 3;
-        this.score = 0;
-        this.sprite = 'images/char-cat-girl.png';
         this.moveToStart();
     }
 
-    moveToStart() {
+    moveToStart(): void {
         this.xInTiles = 2;
         this.yInTiles = 5;
     }
 
-    handleInput(input) {
+    handleInput(input: Direction): void {
         switch (input) {
             case 'up':
                 if (this.yInTiles - 1 > 0) {
@@ -36,7 +40,7 @@ export class Player {
         }
     }
 
-    update(enemies, items) {
+    update(enemies: Positioned[], items: Collidable[]): void {
         if (this.isHitByEnemy(enemies)) {
             this.lives = Math.max(0, this.lives - 1);
             this.moveToStart();
@@ -49,15 +53,18 @@ export class Player {
         }
     }
 
-    isHitByEnemy(enemies) {
+    isHitByEnemy(enemies: Positioned[]): boolean {
         return enemies.some(e => this.xInTiles === e.xInTiles && this.yInTiles === e.yInTiles);
     }
 
-    pickedUpItem(items) {
+    // Generic so callers get back the same type they passed in — the real game
+    // passes Collidable[] and gets Collidable | null (enabling item.onPickup),
+    // while tests can pass plain Positioned objects without an onPickup stub.
+    pickedUpItem<T extends Positioned>(items: T[]): T | null {
         return items.find(item => this.xInTiles === item.xInTiles && this.yInTiles === item.yInTiles) ?? null;
     }
 
-    render(ctx) {
+    render(ctx: CanvasRenderingContext2D): void {
         ctx.textAlign = 'left';
         ctx.font = '30px Arial';
         ctx.clearRect(0, 0, 200, 30);
