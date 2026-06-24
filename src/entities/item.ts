@@ -34,33 +34,21 @@ export class Item {
 }
 
 export class Heart extends Item {
-    constructor() {
-        super();
-        this.sprite = 'images/Heart.png';
-    }
+    override sprite = 'images/Heart.png';
     override onPickup(player: PlayerLike): void { player.lives = Math.min(player.lives + 1, 9); }
 }
 
 export class BlueGem extends Item {
-    constructor() {
-        super();
-        this.sprite = 'images/Gem Blue.png';
-    }
+    override sprite = 'images/Gem Blue.png';
     override onPickup(player: PlayerLike): void { player.score += 50; }
 }
 
 export class OrangeGem extends Item {
-    constructor() {
-        super();
-        this.sprite = 'images/Gem Orange.png';
-    }
+    override sprite = 'images/Gem Orange.png';
     override onPickup(player: PlayerLike): void { player.score += 100; }
 }
 
 export class GreenGem extends Item {
-    constructor() {
-        super();
-        this.sprite = 'images/Gem Green.png';
-    }
+    override sprite = 'images/Gem Green.png';
     override onPickup(player: PlayerLike): void { player.score += 150; }
 }
