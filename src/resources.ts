@@ -1,6 +1,6 @@
 const resourceCache = new Map<string, HTMLImageElement>();
 const pendingLoads = new Set<string>();
-const readyCallbacks: Array<() => void> = [];
+const { promise: readyPromise, resolve: resolveReady } = Promise.withResolvers<void>();
 
 // A 1×1 transparent canvas used as a safe fallback when a requested image is
 // missing or failed to load. drawImage() accepts CanvasImageSource, so this
@@ -22,12 +22,12 @@ function _load(url: string): void {
     img.onload = () => {
         resourceCache.set(url, img);
         pendingLoads.delete(url);
-        if (isReady()) readyCallbacks.forEach(fn => fn());
+        if (isReady()) resolveReady();
     };
     img.onerror = () => {
         console.warn(`Failed to load image: ${url}`);
         pendingLoads.delete(url);
-        if (isReady()) readyCallbacks.forEach(fn => fn());
+        if (isReady()) resolveReady();
     };
     img.src = url;
 }
@@ -51,6 +51,6 @@ export const Resources = {
     },
     isReady,
     onReady(fn: () => void): void {
-        readyCallbacks.push(fn);
+        void readyPromise.then(fn);
     },
 };

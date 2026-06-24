@@ -36,9 +36,9 @@ function main(timestamp: number): void {
 }
 
 function update(dt: number): void {
-    allEnemies.forEach(enemy => enemy.update(dt, player!.score));
+    for (const enemy of allEnemies) enemy.update(dt, player!.score);
     player!.update(allEnemies, allItems);
-    allItems.forEach(item => item.update(dt));
+    for (const item of allItems) item.update(dt);
     if (player!.lives <= 0) gameOver = true;
 }
 
@@ -48,9 +48,9 @@ function render(): void {
             ctx.drawImage(Resources.get(ROW_IMAGES[row]), col * TILE_WIDTH, row * TILE_HEIGHT);
         }
     }
-    allEnemies.forEach(enemy => enemy.render(ctx));
+    for (const enemy of allEnemies) enemy.render(ctx);
     player!.render(ctx);
-    allItems.forEach(item => item.render(ctx));
+    for (const item of allItems) item.render(ctx);
 }
 
 function reset(): void {
