@@ -3,7 +3,7 @@ Classic Arcade Game
 
 Classic Arcade Game is an overhead view action game reminiscent of games like Frogger. The game is built upon the HTML5 canvas element.
 
-![](/images/classicArcadeGameScreenshotSmall.png)
+![](public/images/classicArcadeGameScreenshotSmall.png)
 
 Story
 ==============================
